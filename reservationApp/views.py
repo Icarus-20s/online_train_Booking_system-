@@ -1,8 +1,9 @@
-from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.contrib.auth.models import User,auth
-from django.contrib import messages
-import requests
+from rest_framework.decorators import api_view
+from .serializer import UserLoginSerializer, UserSerializer
+from django.contrib.auth.hashers import make_password, check_password
 
 
 # Create your views here.
@@ -10,29 +11,30 @@ import requests
 def homePage(request):
     return render(request , 'home.html')
 
+@api_view(["POST" , "GET"])
 def reservation(request):
-    if request.method=="POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-        password1 = request.POST["password1"]
-        password2 = request.POST["password2"]
-        if password1==password2:
-            if User.objects.filter(email=email).exists():
-                messages.info(request ,"Email already used")
-            elif User.objects.filter(username=username).exists():
-                messages.info(request , "Username already used")
-                return redirect('register')
-            else:
-                user = User.objects.create_user(username=username , email=email , password=password1)
-                user.save()
-                return redirect('login')
-        else:
-            messages.info(request ,"password not same")
-            return redirect ('register')
-    return render(request , 'register.html')
-
-def login(request):
+    serializer = UserSerializer(data=request.data)
+    if not serializer.is_valid():
+        return render(request , 'register.html')
+    serializer.save()
     return render(request , 'login.html')
+@api_view(["POST" , "GET"])
+def login(request):
+    if request.method=="GET":
+         return render(request , 'login.html')
+    print(request.__dict__)
+    serializer = UserLoginSerializer(data=request.data)
+    if not serializer.is_valid():
+        return HttpResponse("Invalid input!!")
+    email = serializer.validated_data["email"]
+    password = serializer.validated_data["password"]
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return HttpResponse("user not found!!")
+    
+    if not check_password(password, user.password):
+                return HttpResponse("Invalid credentials")
+    return HttpResponse("Logged in")
 
 
 
