@@ -7,44 +7,57 @@
       body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f9;
-        color: #333;
+        margin: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
-        margin: 0;
       }
+
       .container {
         background-color: #fff;
-        padding: 20px;
+        padding: 30px;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        width: 350px;
         text-align: center;
       }
+
       h1 {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        color: #007bff;
       }
+
       label {
         display: block;
-        margin: 10px 0 5px;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: bold;
       }
-      input {
-        width: 100%;
+
+      input[type="text"],
+      input[type="date"],
+      input[type="time"] {
+        width: calc(100% - 22px);
         padding: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        box-sizing: border-box;
       }
+
       button {
-        padding: 10px 20px;
+        padding: 12px 20px;
         background-color: #007bff;
         color: #fff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         transition: background-color 0.3s;
+        width: 100%;
+        font-size: 16px;
       }
+
       button:hover {
         background-color: #0056b3;
       }
@@ -54,7 +67,15 @@
     <div class="container">
       <h1>Book a Ticket</h1>
       <form method="post">
-        {% csrf_token %} {{ form.as_p }}
+        {% csrf_token %}
+        <label for="train_number">Train Number:</label>
+        <input type="text" id="train_number" name="train_number" required />
+        <label for="departure_date">Departure Date:</label>
+        <input type="date" id="departure_date" name="departure_date" required />
+        <label for="departure_time">Departure Time:</label>
+        <input type="time" id="departure_time" name="departure_time" required />
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" name="destination" required />
         <button type="submit">Book</button>
       </form>
     </div>
