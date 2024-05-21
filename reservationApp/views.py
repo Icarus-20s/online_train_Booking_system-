@@ -35,7 +35,7 @@ def login(request):
 
     serializer = UserLoginSerializer(data=request.data)
     if not serializer.is_valid():
-        return HttpResponse("Invalid input!!")
+        return JsonResponse(serializer.errors)
 
     email = serializer.validated_data["email"]
     password = serializer.validated_data["password"]
@@ -43,6 +43,8 @@ def login(request):
 
     if not user:
         return HttpResponse("User not found!!")
+    print(User)
+    print(password)
 
     if not check_password(password, user.password):
         return HttpResponse("Invalid credentials")
