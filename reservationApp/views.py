@@ -43,7 +43,7 @@ def login(request):
 
     if not user:
         return HttpResponse("User not found!!")
-    print(User)
+    print(user)
     print(password)
 
     if not check_password(password, user.password):
@@ -55,6 +55,7 @@ def login(request):
     return response
 
 
+@api_view(["GET"])
 @authentication_classes([UserAuthentication])
 def dashboard(request):
     tickets = Ticket.objects.filter(user=request.user)
