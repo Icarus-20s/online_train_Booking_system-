@@ -19,7 +19,7 @@ def homePage(request):
 @api_view(["POST", "GET"])
 def register(request):
     if request.method == "GET":
-        return render(request, "register.html")
+        return render(request, "register.htmbl")
     serializer = UserSerializer(data=request.data)
     if not serializer.is_valid():
         return JsonResponse(serializer.errors)

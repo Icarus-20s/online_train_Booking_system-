@@ -9,8 +9,6 @@ class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         # Get the token from cookies
         token = request.COOKIES.get("token")
-        breakpoint()
-
         if not token:
             raise NotAuthenticated("Token cookie missing")
 
