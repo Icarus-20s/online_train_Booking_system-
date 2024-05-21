@@ -1,24 +1,8 @@
-{% comment %}
-<!-- templates/home.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Page</title>
-  </head>
-  <body>
-    <h1>Welcome to the Home Page</h1>
-    <a href="{% url 'register' %}">Register</a>
-    <a href="{% url 'login' %}">Login</a>
-  </body>
-</html>
-{% endcomment %}
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Home</title>
+    <title>Book Ticket</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -31,32 +15,48 @@
         margin: 0;
       }
       .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
         text-align: center;
       }
       h1 {
-        font-size: 3em;
         margin-bottom: 20px;
       }
-      a {
-        display: inline-block;
-        margin: 10px;
+      label {
+        display: block;
+        margin: 10px 0 5px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
         padding: 10px 20px;
-        text-decoration: none;
         background-color: #007bff;
         color: #fff;
+        border: none;
         border-radius: 5px;
+        cursor: pointer;
         transition: background-color 0.3s;
       }
-      a:hover {
+      button:hover {
         background-color: #0056b3;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Welcome to the Reservation System</h1>
-      <a href="/register">Register</a>
-      <a href="/login">Login</a>
+      <h1>Book a Ticket</h1>
+      <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Book</button>
+      </form>
     </div>
   </body>
 </html>

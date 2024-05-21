@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% csrf_token %}
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f9;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+      }
+      .btn-danger:hover {
+        background-color: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dashboard</h1>
+      <a href="{% url 'book_ticket' %}" class="btn">Book a Ticket</a>
+      <h2>Your Tickets</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Train Number</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Destination</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ticket in tickets %}
+          <tr>
+            <td>{{ ticket.train_number }}</td>
+            <td>{{ ticket.departure_date }}</td>
+            <td>{{ ticket.departure_time }}</td>
+            <td>{{ ticket.destination }}</td>
+            <td>
+              <a
+                href="{% url 'cancel_ticket' ticket.id %}"
+                class="btn btn-danger"
+                >Cancel</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
