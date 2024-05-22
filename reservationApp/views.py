@@ -19,7 +19,7 @@ def homePage(request):
 @api_view(["POST", "GET"])
 def register(request):
     if request.method == "GET":
-        return render(request, "register.htmbl")
+        return render(request, "register.html")
     serializer = UserSerializer(data=request.data)
     if not serializer.is_valid():
         return JsonResponse(serializer.errors)
@@ -58,25 +58,26 @@ def login(request):
 @api_view(["GET"])
 @authentication_classes([UserAuthentication])
 def dashboard(request):
-    tickets = Ticket.objects.filter(user=request.user)
+    tickets = Ticket.objects.filter(user=request.user).all()
     return render(request, "dashboard.html", {"tickets": tickets})
 
 
-@login_required
+@api_view(["POST", "GET"])
+@authentication_classes([UserAuthentication])
 def book_ticket(request):
-    if request.method == "POST":
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.user = request.user
-            ticket.save()
-            return redirect("dashboard")
-    else:
+    if request.method == "GET":
         form = TicketForm()
-    return render(request, "book_ticket.html", {"form": form})
+        return render(request, "book_ticket.html", {"form": form})
+    form = TicketForm(request.POST)
+    if form.is_valid():
+        ticket = form.save(commit=False)
+        ticket.user = request.user
+        ticket.save()
+        return redirect("dashboard")
 
 
-@login_required
+@api_view(["GET"])
+@authentication_classes([UserAuthentication])
 def cancel_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id, user=request.user)
     if ticket:
