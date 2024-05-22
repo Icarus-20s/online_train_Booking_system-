@@ -5,66 +5,140 @@
     <meta charset="UTF-8" />
     <title>Dashboard</title>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
         color: #333;
         margin: 0;
-        padding: 20px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        min-height: 100vh;
       }
+
       .container {
-        max-width: 800px;
-        margin: auto;
-        margin-top: 50px;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(0);
+        animation: fadeInUp 0.5s ease-in-out forwards;
       }
-      h1 {
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1, h2 {
         text-align: center;
+        color: #333;
         margin-bottom: 20px;
+        position: relative;
       }
+
+      h1::after, h2::after {
+        content: '';
+        width: 50px;
+        height: 4px;
+        background: #ff6b6b;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
+        margin-bottom: 20px;
+        overflow: hidden;
+        border-radius: 10px;
       }
-      th,
-      td {
-        padding: 10px;
-        border: 1px solid #ccc;
+
+      th, td {
+        padding: 15px;
+        border: 1px solid #ddd;
         text-align: left;
+        transition: background-color 0.3s;
       }
+
       th {
-        background-color: #f4f4f9;
+        background: linear-gradient(120deg, #ff6b6b 0%, #ffd56b 100%);
+        color: #fff;
+        font-weight: bold;
       }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
       .btn {
         display: inline-block;
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #ff6b6b;
         color: #fff;
         text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s;
+        border-radius: 25px;
+        transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
       }
+
       .btn:hover {
-        background-color: #0056b3;
+        background-color: #e60023;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
+
       .btn-danger {
-        background-color: #dc3545;
+        background-color: #e60023;
       }
+
       .btn-danger:hover {
-        background-color: #c82333;
+        background-color: #c2001a;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+        }
+
+        table, th, td {
+          font-size: 14px;
+        }
+
+        .btn {
+          padding: 8px 16px;
+        }
       }
     </style>
   </head>
   <body>
-    <a
-    href="{% url 'logout' %}"
-    class="btn btn-danger"
-    >Logout</a
-  >
     <div class="container">
+      <a href="{% url 'logout' %}" class="btn btn-danger" style="float: right; margin-bottom: 20px;">Logout</a>
       <h1>Ticket Section</h1>
       <a href="{% url 'book_ticket' %}" class="btn">Book a Ticket</a>
       <h2>Your Tickets</h2>
@@ -90,11 +164,7 @@
             <td>{{ ticket.train.destination }}</td>
             <td>{{ ticket.booked_at }}</td>
             <td>
-              <a
-                href="{% url 'cancel_ticket' ticket.id %}"
-                class="btn btn-danger"
-                >Cancel</a
-              >
+              <a href="{% url 'cancel_ticket' ticket.id %}" class="btn btn-danger">Cancel</a>
             </td>
           </tr>
           {% endfor %}
