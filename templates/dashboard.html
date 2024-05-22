@@ -15,6 +15,7 @@
       .container {
         max-width: 800px;
         margin: auto;
+        margin-top: 50px;
         padding: 20px;
         background-color: #fff;
         border-radius: 10px;
@@ -58,8 +59,13 @@
     </style>
   </head>
   <body>
+    <a
+    href="{% url 'logout' %}"
+    class="btn btn-danger"
+    >Logout</a
+  >
     <div class="container">
-      <h1>Dashboard</h1>
+      <h1>Ticket Section</h1>
       <a href="{% url 'book_ticket' %}" class="btn">Book a Ticket</a>
       <h2>Your Tickets</h2>
       <table>
@@ -68,17 +74,21 @@
             <th>Train Number</th>
             <th>Departure Date</th>
             <th>Departure Time</th>
+            <th>Source</th>
             <th>Destination</th>
+            <th>Booked At</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {% for ticket in tickets %}
           <tr>
-            <td>{{ ticket.train_number }}</td>
-            <td>{{ ticket.departure_date }}</td>
-            <td>{{ ticket.departure_time }}</td>
-            <td>{{ ticket.destination }}</td>
+            <td>{{ ticket.train.train_number }}</td>
+            <td>{{ ticket.train.departure_date }}</td>
+            <td>{{ ticket.train.departure_time }}</td>
+            <td>{{ ticket.train.source }}</td>
+            <td>{{ ticket.train.destination }}</td>
+            <td>{{ ticket.booked_at }}</td>
             <td>
               <a
                 href="{% url 'cancel_ticket' ticket.id %}"
@@ -86,6 +96,31 @@
                 >Cancel</a
               >
             </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="container">
+      <h2>Available Trains</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Train Number</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Source</th>
+            <th>Destination</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for train in available_trains %}
+          <tr>
+            <td>{{ train.train_number }}</td>
+            <td>{{ train.departure_date }}</td>
+            <td>{{ train.departure_time }}</td>
+            <td>{{ train.source }}</td>
+            <td>{{ train.destination }}</td>
           </tr>
           {% endfor %}
         </tbody>

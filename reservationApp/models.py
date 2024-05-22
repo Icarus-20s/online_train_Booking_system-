@@ -36,16 +36,27 @@ class User(BaseModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name}"
+
+
+class Train(models.Model):
+    train_number = models.CharField(max_length=100)
+    departure_date = models.DateField()
+    departure_time = models.TimeField()
+    source = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.train_number}"
 
 
 class Ticket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    train_number = models.CharField(max_length=100)
-    departure_date = models.DateField()
-    departure_time = models.TimeField()
-    destination = models.CharField(max_length=100)
+    train = models.ForeignKey(Train, on_delete=models.CASCADE)
     booked_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Ticket {self.train_number} to {self.destination}"
+        return f"Ticket for {self.user} to {self.train.destination}"
+
+    class Meta:
+        unique_together = ["user", "train"]

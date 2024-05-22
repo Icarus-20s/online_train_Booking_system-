@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from .models import User
+from .models import User, Ticket
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,6 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
         extra_kwargs = {"id": {"read_only": True}, "password": {"write_only": True}}
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = "__all__"
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import User, Ticket
+from .models import User, Ticket, Train
 
 # Register your models here.
 admin.site.register(User)
 admin.site.register(Ticket)
+admin.site.register(Train)

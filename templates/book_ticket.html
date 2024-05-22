@@ -56,28 +56,93 @@
         transition: background-color 0.3s;
         width: 100%;
         font-size: 16px;
+        margin-top: 10px;
       }
 
       button:hover {
         background-color: #0056b3;
+      }
+
+      .train-details {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .train-details p {
+        margin: 5px 0;
+      }
+
+      .option-menu {
+        font-size: 16px;
+        background-color: #f4f4f9;
+        color: #007bff;
+      }
+      
+      select {
+        width: 200px;
+        padding: 5px;
+        height: 30px;
+        font-size: 14px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="#000" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 10px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Book a Ticket</h1>
-      <form method="post">
+      <form method="post" action="{% url 'book_ticket' %}">
         {% csrf_token %}
-        <label for="train_number">Train Number:</label>
-        <input type="text" id="train_number" name="train_number" required />
-        <label for="departure_date">Departure Date:</label>
-        <input type="date" id="departure_date" name="departure_date" required />
-        <label for="departure_time">Departure Time:</label>
-        <input type="time" id="departure_time" name="departure_time" required />
-        <label for="destination">Destination:</label>
-        <input type="text" id="destination" name="destination" required />
+        <label for="train_select">Select Train:</label>
+        <select id="train" name="train" onchange="showTrainDetails()" required>
+          <option value="" class="option-menu">Select a train</option>
+          {% for train in trains %}
+          <option value="{{ train.id }}" class="option-menu">
+            {{ train.source }} to {{ train.destination }}
+          </option>
+          {% endfor %}
+        </select>
         <button type="submit">Book</button>
       </form>
+      <div class="train-details" id="train-details"></div>
     </div>
+
+    <script>
+      const trains = {
+        {% for train in trains %}
+        "{{ train.id }}": {
+          "source": "{{ train.source }}",
+          "destination": "{{ train.destination }}",
+          "departure_time": "{{ train.departure_time }}",
+          "departure_date": "{{ train.departure_date }}",
+          "train_number": "{{ train.train_number }}",
+        },
+        {% endfor %}
+      };
+
+      function showTrainDetails() {
+        const trainSelect = document.getElementById('train');
+        const selectedTrainId = trainSelect.value;
+        const trainDetailsDiv = document.getElementById('train-details');
+        if (selectedTrainId) {
+          const train = trains[selectedTrainId];
+          trainDetailsDiv.innerHTML = `
+          <p><strong>Train:</strong> ${train.train_number}</p>
+            <p><strong>Source:</strong> ${train.source}</p>
+            <p><strong>Destination:</strong> ${train.destination}</p>
+            <p><strong>Departure Date:</strong> ${train.departure_date}</p>
+            <p><strong>Departure Time:</strong> ${train.departure_time}</p>
+          `;
+        } else {
+          trainDetailsDiv.innerHTML = '';
+        }
+      }
+    </script>
   </body>
 </html>

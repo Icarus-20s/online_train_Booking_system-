@@ -3,12 +3,10 @@ from django.shortcuts import render, redirect
 from reservationApp.models import User
 from rest_framework.decorators import api_view, authentication_classes
 from reservationApp.auth import UserAuthentication
-from .serializer import UserLoginSerializer, UserSerializer
+from .serializer import UserLoginSerializer, UserSerializer, TicketSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.decorators import login_required
-from .models import Ticket
-from .forms import TicketForm
+from .models import Ticket, Train
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -43,8 +41,6 @@ def login(request):
 
     if not user:
         return HttpResponse("User not found!!")
-    print(user)
-    print(password)
 
     if not check_password(password, user.password):
         return HttpResponse("Invalid credentials")
@@ -59,21 +55,27 @@ def login(request):
 @authentication_classes([UserAuthentication])
 def dashboard(request):
     tickets = Ticket.objects.filter(user=request.user).all()
-    return render(request, "dashboard.html", {"tickets": tickets})
+    user_booked_trains=Ticket.objects.filter(user=request.user).values_list('train_id', flat=True)
+    available_trains = Train.objects.exclude(id__in=user_booked_trains).all()
+    return render(request, "dashboard.html", {"tickets": tickets, "available_trains":available_trains})
 
 
 @api_view(["POST", "GET"])
 @authentication_classes([UserAuthentication])
 def book_ticket(request):
+    data = request.data.copy()
+    data["user"]=request.user.id
+    user_booked_trains=Ticket.objects.filter(user=request.user).values_list('train_id', flat=True)
+    available_trains = Train.objects.exclude(id__in=user_booked_trains).all()
     if request.method == "GET":
-        form = TicketForm()
-        return render(request, "book_ticket.html", {"form": form})
-    form = TicketForm(request.POST)
-    if form.is_valid():
-        ticket = form.save(commit=False)
-        ticket.user = request.user
-        ticket.save()
-        return redirect("dashboard")
+        return render(request, "book_ticket.html", {"trains": available_trains})
+    serializer = TicketSerializer(data=data)
+    if not serializer.is_valid():
+        return JsonResponse(serializer.errors)
+    serializer.save()
+    response = redirect("dashboard")
+    return response
+
 
 
 @api_view(["GET"])
@@ -83,3 +85,10 @@ def cancel_ticket(request, ticket_id):
     if ticket:
         ticket.delete()
     return redirect("dashboard")
+
+@api_view(["POST", "GET"])
+@authentication_classes([UserAuthentication])
+def logout(request):
+    response = redirect("login")
+    response.delete_cookie("token")
+    return response
